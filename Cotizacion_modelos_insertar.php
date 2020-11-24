@@ -8,6 +8,8 @@ class CotizacionModelo{
     private $stack;
     private $referencia;
     private $precio;
+    private $marca;
+    private $tipoe;
 
     function __construct(){}
 
@@ -59,5 +61,19 @@ class CotizacionModelo{
  
     public function setPrecio($precio){
         $this->precio = $precio;
+    }
+    public function getMarca(){
+		return $this->marca;
+		}
+ 
+    public function setMarca($marca){
+        $this->marca = $marca;
+    }
+    public function getTipoe(){
+		return $this->tipoe;
+		}
+ 
+    public function setTipoe($tipoe){
+        $this->tipoe = $tipoe;
     }
 }  

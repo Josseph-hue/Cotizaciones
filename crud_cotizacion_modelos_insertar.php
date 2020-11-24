@@ -7,16 +7,40 @@ require_once('connection_db.php');
 		public function __construct(){}
 
 		// método para insertar, recibe como parámetro un objeto de tipo libro
-		public function insertar($cotizacionmodelo){
+		public function insertar2($cotizacionmodelo){
 			$db=Db::conectar();
-			$insert=$db->prepare('INSERT INTO productos(MODELO,DESCRIPCION,PUERTOS,POE,STACK,REFERENCIA,PRECIO) values(:MODELO,:DESCRIPCION,:PUERTOS,:POE,:STACK,:REFERENCIA,:PRECIO)');
-			$insert->bindValue('MODELO',$cotizacionmodelo->getModelo());
+			$insert=$db->prepare('INSERT INTO productos(ID_MODELO,DESCRIPCION,ID_PUERTOS,POE,STACK,REFERENCIA,PRECIO,ID_MARCA,ID_TIPO_EQUIPO) values(:ID_MODELO,:DESCRIPCION,:ID_PUERTOS,:POE,:STACK,:REFERENCIA,:PRECIO,:ID_MARCA,:ID_TIPO_EQUIPO)');
+			$insert->bindValue('ID_MODELO',$cotizacionmodelo->getModelo());
 			$insert->bindValue('DESCRIPCION',$cotizacionmodelo->getDescripcion());
-			$insert->bindValue('PUERTOS',$cotizacionmodelo->getPuertos());
+			$insert->bindValue('ID_PUERTOS',$cotizacionmodelo->getPuertos());
 			$insert->bindValue('POE',$cotizacionmodelo->getPoe());
 			$insert->bindValue('STACK',$cotizacionmodelo->getStack());
 			$insert->bindValue('REFERENCIA',$cotizacionmodelo->getReferencia());
 			$insert->bindValue('PRECIO',$cotizacionmodelo->getPrecio());
+			$insert->bindValue('ID_MARCA',$cotizacionmodelo->getMarca());
+			$insert->bindValue('ID_TIPO_EQUIPO',$cotizacionmodelo->getTipoe());
+			$insert->execute();
+
+		}
+
+		public function guardarMarca($marca){
+			$db=Db::conectar();
+			$insert=$db->prepare('INSERT INTO marca(NOMBRE) values(:NOMBRE)');
+			$insert->bindValue('NOMBRE',$marca->getMarca());
+			$insert->execute();
+
+		}
+		public function guardarTipo($tipoe){
+			$db=Db::conectar();
+			$insert=$db->prepare('INSERT INTO tipo_equipo(NOMBRE) values(:NOMBRE)');
+			$insert->bindValue('NOMBRE',$tipoe->getTipoe());
+			$insert->execute();
+
+		}
+		public function guardarModelo($modelo){
+			$db=Db::conectar();
+			$insert=$db->prepare('INSERT INTO modelos(MODELO) values(:MODELO)');
+			$insert->bindValue('MODELO',$modelo->getModelo());
 			$insert->execute();
 
 		}

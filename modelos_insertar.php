@@ -1,28 +1,143 @@
+<?php
+// incluye la clase Db
+require_once('connection_db.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <title>Insertar Dispositivos</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="bootstrap.min.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-4">
+        <div class="col-8">
             <form action="controller_modelos_insertar.php" method="POST">
-                <input type="hidden" name="insertar">
-                <div class="form-group">
-                    <label for="modelo">Modelo</label>
-                    <input type="text" class="form-control" id="modelo" name="modelo" required placeholder="Modelo">
+                <input type="hidden" name="guardarMarca">
+                <div class="card">
+                    <div class="card-body">
+                    <label class="form-check-label" for="examplecheck1">Marca</label>
+                    <br>
+                    <input type="text" name="marca" id="">
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </div> 
+            </form>
+        </div>
+        <div class="col-8">
+            <form action="controller_modelos_insertar.php" method="POST">
+                <input type="hidden" name="guardarTipo">
+                <div class="card">
+                    <div class="card-body">
+                    <label class="form-check-label" for="examplecheck1">Tipo de Equipo</label>
+                    <br>
+                    <input type="text" name="tipoe" id="">
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
                 </div>
+                <div>     
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="col-8">
+            <form action="controller_modelos_insertar.php" method="POST">
+                <input type="hidden" name="guardarModelo">
+                <div class="card">
+                    <div class="card-body">
+                    <div class="form-group">
+                    <label for="modelo">Modelo</label>
+                    <br>
+                    <input type="text" id="modelo" name="modelo" required placeholder="Modelo">
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                    </div>
+                <div>     
+                </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-8">
+            <div class="card">
+            <div class="card-body">
+                <form action="controller_modelos_insertar.php" method="POST">
+                <input type="hidden" name="insertar2">
+                <div>      
+                    <label class="form-check-label" for="examplecheck1">Tipo de Equipo</label>
+                    <select name="tipoe"class="form-control">
+                    <option>Seleccione:</option>
+                        <?php
+                            // Realizamos la consulta para extraer los datos
+                            $db=Db::conectar();
+                            $select4=$db->query('SELECT * FROM tipo_equipo ORDER BY NOMBRE ASC');                            
+                            foreach($select4->fetchAll() as $tipoe){
+                                echo '<option value="'.$tipoe['id'].'">'.$tipoe['NOMBRE'].'</option>';
+                            }
+                        ?>       
+                    </select>
+                </div>
+                
+                <div>
+            <form action="controller_modelos_insertar.php" method="POST">
+                <div>      
+                    <label class="form-check-label" for="examplecheck1">Marca</label>
+                    <select name="marca"class="form-control">
+                    <option>Seleccione:</option>
+                        <?php
+                            // Realizamos la consulta para extraer los datos
+                            $db=Db::conectar();
+                            $select5=$db->query('SELECT * FROM marca ORDER BY NOMBRE ASC');                            
+                            foreach($select5->fetchAll() as $marca){
+                                echo '<option value="'.$marca['id'].'">'.$marca['NOMBRE'].'</option>';
+                            }
+                        ?>       
+                    </select>
+                </div>
+                </div>
+                <div>
+            <form action="controller_modelos_insertar.php" method="POST">
+                <div>      
+                    <label class="form-check-label" for="examplecheck1">Modelo</label>
+                    <select name="modelo"class="form-control">
+                    <option>Seleccione:</option>
+                        <?php
+                            // Realizamos la consulta para extraer los datos
+                            $db=Db::conectar();
+                            $select6=$db->query('SELECT * FROM modelos ORDER BY MODELO ASC');                            
+                            foreach($select6->fetchAll() as $modelo){
+                                echo '<option value="'.$modelo['id'].'">'.$modelo['MODELO'].'</option>';
+                            }
+                        ?>       
+                    </select>
+                </div>
+                </div>
+
                 <div class="form-group">
                     <label for="descripcion">Descripción</label>
-                    <input type="text" class="form-control" id="descripcion" name="descripcion" placeholder="Opcional">
+                    <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Opcional"></textarea>
                 </div>
-                <div class="form-group">
-                    <label for="puertos">Puertos</label>
-                    <input type="text" class="form-control" id="puertos" name="puertos" placeholder="Numero de Puertos" required>
+                <div>      
+                    <label class="form-check-label" for="examplecheck1">Número de Puertos</label>
+                    <select name="puertos" class="form-control">
+                    <option>Seleccione:</option>
+                        <?php
+                            // Realizamos la consulta para extraer los datos
+                            $db=Db::conectar();
+                            $select2=$db->query('SELECT * FROM puertos ORDER BY PUERTOS ASC');                            
+                            foreach($select2->fetchAll() as $puerto){
+                                echo '<option value="'.$puerto['id'].'">'.$puerto['PUERTOS'].'</option>';
+                            }
+                        ?>       
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="poe">POE</label>
@@ -46,8 +161,13 @@
                 <div>
                     <label class="form-check-label" for="examplecheck1"></label>
                 </div>
-                <button type="submit" class="btn btn-primary">INCLUIR</button>
+                <br>
+                    <div align='center'><button type="submit" class="btn btn-primary">INCLUIR</button></div>
+                    </div>
             </form>
+        </div>
+        </div>
+        </div>
         </div>
     </div>
 </div>

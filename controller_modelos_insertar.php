@@ -8,7 +8,7 @@ $crudModelo= new CrudCotizacionModelo();
 $modelo= new CotizacionModelo();
 
 	// si el elemento insertar no viene nulo llama al crud e inserta un libro
-	if (isset($_POST['insertar'])) {
+	if (isset($_POST['insertar2'])) {
 		$modelo->setModelo($_POST['modelo']);
 		$modelo->setDescripcion($_POST['descripcion']);
 		$modelo->setPuertos($_POST['puertos']);
@@ -16,25 +16,27 @@ $modelo= new CotizacionModelo();
 		$modelo->setStack($_POST['stack']);
 		$modelo->setReferencia($_POST['referencia']);
 		$modelo->setPrecio($_POST['precio']);
+		$modelo->setMarca($_POST['marca']);
+		$modelo->setTipoe($_POST['tipoe']);
 		/* $libro->setAutor($_POST['autor']);
 		$libro->setAnio_edicion($_POST['edicion']); */
 		//llama a la función insertar definida en el crud
-		$crudModelo->insertar($modelo);
+		$crudModelo->insertar2($modelo);
 		header('Location: modelos_insertar.php');
-	// si el elemento de la vista con nombre actualizar no viene nulo, llama al crud y actualiza el libro
-	}/* elseif(isset($_POST['actualizar'])){
-		$libro->setId($_POST['id']);
-		$libro->setNombre($_POST['nombre']);
-		$libro->setAutor($_POST['autor']);
-		$libro->setAnio_edicion($_POST['edicion']);
-		$crud->actualizar($libro);
-		header('Location: index.php');
-	// si la variable accion enviada por GET es == 'e' llama al crud y elimina un libro
-	}elseif ($_GET['accion']=='e') {
-		$crud->eliminar($_GET['id']);
-		header('Location: index.php');		
-	// si la variable accion enviada por GET es == 'a', envía a la página actualizar.php 
-	}elseif($_GET['accion']=='a'){
-		header('Location: actualizar.php');
-	} */
+		}
+	if (isset($_POST['guardarMarca'])) {
+		$modelo->setMarca($_POST['marca']);
+		$crudModelo->guardarMarca($modelo);
+		header('Location: modelos_insertar.php');
+}
+	if (isset($_POST['guardarTipo'])) {
+			$modelo->setTipoe($_POST['tipoe']);
+			$crudModelo->guardarTipo($modelo);
+			header('Location: modelos_insertar.php');
+	}
+	if (isset($_POST['guardarModelo'])) {
+			$modelo->setModelo($_POST['modelo']);
+			$crudModelo->guardarModelo($modelo);
+			header('Location: modelos_insertar.php');
+	}
 ?>
