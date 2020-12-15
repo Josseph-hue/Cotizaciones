@@ -9,63 +9,66 @@ require_once('connection_db.php');
 		// método para insertar, recibe como parámetro un objeto de tipo libro
 		public function insertar($cotizacion){
 			$db=Db::conectar();
-			$insert=$db->prepare('INSERT INTO cliente(NOMBRE,EMPRESA,CORREO) values(:NOMBRE,:EMPRESA,:CORREO)');
+			$insert=$db->prepare('INSERT INTO cliente(NOMBRE,NIT,EMPRESA,CORREO) values(:NOMBRE,:NIT,:EMPRESA,:CORREO)');
 			$insert->bindValue('NOMBRE',$cotizacion->getNombrePersona());
+			$insert->bindValue('NIT',$cotizacion->getNit());
 			$insert->bindValue('EMPRESA',$cotizacion->getEmpresa());
 			$insert->bindValue('CORREO',$cotizacion->getCorreo());
 			$insert->execute();
 
-		}
-
-		// método para mostrar todos los libros
-		/* public function mostrar(){
-			$db=Db::conectar();
-            $listaLibros=[];            
-			$select=$db->query('SELECT * FROM libros');
-
-			foreach($select->fetchAll() as $libro){
-				$myLibro= new Libro();
-				$myLibro->setId($libro['id']);
-				$myLibro->setNombre($libro['nombre']);
-				$myLibro->setAutor($libro['autor']);
-				$myLibro->setAnio_edicion($libro['anio_edicion']);
-				$listaLibros[]=$myLibro;
+			$select=$db->query("SELECT DISTINCT id FROM cliente WHERE NIT=".$cotizacion->getNit());                            
+			foreach($select->fetchAll() as $nit){
+				$res = $nit["id"];
 			}
-			return $listaLibros;
+			return $res;
+		}
+		public function cotizacion($cotizacion){
+			$db=Db::conectar();
+			$insert=$db->prepare('INSERT INTO cotizacion(ID_CLIENTE,CANT_MESES,CANT_EQUIPOS,FECHA) values(:ID_CLIENTE,:CANT_MESES,:CANT_EQUIPOS,:FECHA)');
+			$insert->bindValue('ID_CLIENTE',$cotizacion->getIdCliente());
+			$insert->bindValue('CANT_MESES',$cotizacion->getCantMeses());
+			$insert->bindValue('CANT_EQUIPOS',$cotizacion->getCantEquipos());
+			$insert->bindValue('FECHA',$cotizacion->getFecha());
+			$insert->execute();	
+
+			$select=$db->query("SELECT MAX(id) as id FROM cotizacion");                            
+			foreach($select->fetchAll() as $sel){
+				$id = $sel["id"];
+			}	
+			return $id;
+
+		}
+		public function cotizacionproducto($cotizacion){
+			$db=Db::conectar();
+			$insert=$db->prepare('INSERT INTO cotizacion_productos(ID_COTIZACION,ID_PRODUCTO,PRECIO_PRODUCTO_ACTUAL) values(:ID_COTIZACION,:ID_PRODUCTO,:PRECIO_PRODUCTO_ACTUAL)');
+			$insert->bindValue('ID_COTIZACION',$cotizacion->getIdCotizacion());
+			$insert->bindValue('ID_PRODUCTO',$cotizacion->getIdProducto());
+			$insert->bindValue('PRECIO_PRODUCTO_ACTUAL',$cotizacion->getPrecioProductoActual());
+			$insert->execute();			
+			$select=$db->query("SELECT MAX(id) as id FROM cotizacion_productos");                            
+			foreach($select->fetchAll() as $sel){
+				$id = $sel["id"];
+			}	
+			return $id;
+
 		}
 
-		// método para eliminar un libro, recibe como parámetro el id del libro
-		public function eliminar($id){
+		function idcliente($nit){
 			$db=Db::conectar();
-			$eliminar=$db->prepare('DELETE FROM libros WHERE ID=:id');
-			$eliminar->bindValue('id',$id);
-			$eliminar->execute();
+			$select=$db->query("SELECT UNIQUE id FROM cliente WHERE NIT=".$nit);                            
+			foreach($select->fetchAll() as $nit){
+				$res = $nit["id"];
+			}
+			return $res;
 		}
 
-		// método para buscar un libro, recibe como parámetro el id del libro
-		public function obtenerLibro($id){
+		function consultaCalculo($nit){
 			$db=Db::conectar();
-			$select=$db->prepare('SELECT * FROM libros WHERE ID=:id');
-			$select->bindValue('id',$id);
-			$select->execute();
-			$libro=$select->fetch();
-			$myLibro= new Libro();
-			$myLibro->setId($libro['id']);
-			$myLibro->setNombre($libro['nombre']);
-			$myLibro->setAutor($libro['autor']);
-			$myLibro->setAnio_edicion($libro['anio_edicion']);
-			return $myLibro;
+			$select=$db->query("SELECT UNIQUE id FROM cliente WHERE NIT=".$nit);                            
+			foreach($select->fetchAll() as $nit){
+				$res = $nit["id"];
+			}
+			return $res;
 		}
-
-		// método para actualizar un libro, recibe como parámetro el libro
-		public function actualizar($libro){
-			$db=Db::conectar();
-			$actualizar=$db->prepare('UPDATE libros SET nombre=:nombre, autor=:autor,anio_edicion=:anio  WHERE ID=:id');
-			$actualizar->bindValue('id',$libro->getId());
-			$actualizar->bindValue('nombre',$libro->getNombre());
-			$actualizar->bindValue('autor',$libro->getAutor());
-			$actualizar->bindValue('anio',$libro->getAnio_edicion());
-			$actualizar->execute();
-		} */
 	}
 ?>

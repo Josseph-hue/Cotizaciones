@@ -1,3 +1,7 @@
+<?php
+// incluye la clase Db
+require_once('connection_db.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +11,8 @@
     <link href="css/style.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/jpg" href="C:\xampp\htdocs\cotizacion-web\image\Favicon 200x200.gif">
+    <script type="text/javascript" src="js/calculos.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="col-9">
@@ -22,18 +28,40 @@
     <div class="card2">
         <div class="card-body2" >
         <div>
-            <label class="form-check-label3" for="examplecheck1">Cotización N° CE-</label>
+            <label class="form-check-label3" for="examplecheck1">Cotización N° CE-00<?php echo $_GET['idcotpro']?></label>
+            <?php
+
+                    $db=Db::conectar();
+                    $select=$db->query("SELECT cli.NOMBRE, cli.NIT, cli.EMPRESA, cli.CORREO, copro.ID_PRODUCTO, pro.REFERENCIA, co.CANT_EQUIPOS, copro.PRECIO_PRODUCTO_ACTUAL, SUM(co.CANT_EQUIPOS* copro.PRECIO_PRODUCTO_ACTUAL) AS SUMA, SUM(co.CANT_EQUIPOS* copro.PRECIO_PRODUCTO_ACTUAL*1.19) AS TOTAL, SUM(co.CANT_EQUIPOS* copro.PRECIO_PRODUCTO_ACTUAL*0.19) AS IVA 
+                        FROM cliente cli, cotizacion co, cotizacion_productos copro, productos pro 
+                        WHERE copro.ID_COTIZACION=co.id AND copro.ID_PRODUCTO=pro.id AND co.ID_CLIENTE=cli.id AND copro.ID_COTIZACION=".$_GET["idcotpro"]."");                            
+                    foreach($select->fetchAll() as $cotizacion){  
+            ?>
+            <!-- <input class="label_left" readonly="readonly" disabled name="consecutivo" <?php echo "<option value=" .$cotizacion["id"]. "></option>";?> -->
+            <?php
+                    }
+                    $db=Db::conectar();
+			        $insert=$db->prepare('UPDATE cotizacion
+                                            SET PRECIO_TOTAL=:PRECIO_TOTAL WHERE id='.$_GET["idcotpro"]);
+			        $insert->bindValue('PRECIO_TOTAL',$cotizacion["TOTAL"]);
+			        $insert->execute();
+                    
+            ?>
             <label class="form-check-label3" for="examplecheck1">Fecha</label>
+            <input class="label_right_2" type="datetime" readonly="readonly" disabled name="fecha"  value="<?php echo date("d-m-Y");?>">
         </div>
         </div>
-    </div>
-    </div>
     <div class>
         <div class="card2">
             <div class="card-body2">
                 <label class="form-check-label2" for="examplecheck1">Cliente</label>
+                <input class="label_right_2" readonly="readonly" disabled name="cliente" <?php echo "<option value=\"" .$cotizacion["NOMBRE"]. "\"></option>";?>
+                <label class="form-check-label2" for="examplecheck1">NIT</label>
+                <input class="label_right_2" readonly="readonly" disabled name="nit" <?php echo "<option value=" .$cotizacion["NIT"]. "></option>";?>
                 <label class="form-check-label2" for="examplecheck1">Empresa</label>
+                <input class="label_right_2" readonly="readonly" disabled name="empresa" <?php echo "<option value=\"" .$cotizacion["EMPRESA"]. "\"></option>";?>
                 <label class="form-check-label2" for="examplecheck1">Correo</label>
+                <input class="label_right_2" readonly="readonly" disabled name="correo" <?php echo "<option value=" .$cotizacion["CORREO"]. "></option>";?>
             </div>
         </div>
     </div>
@@ -62,24 +90,18 @@
         <tbody>
             <tr>
             <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>400</td>
-            </tr>
-            <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            <td>500</td>
-            </tr>
-            <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-            <td>100</td>
+            <td>
+            <input class="label_right" readonly="readonly" disabled name="cliente" <?php echo "<option value=\"" .$cotizacion['REFERENCIA']. "\"></option>";?>
+            </td>
+            <td>
+            <input class="label_right" readonly="readonly" disabled name="cliente" <?php echo "<option value=" .$cotizacion["CANT_EQUIPOS"]. "></option>";?>
+            </td>
+            <td>
+            <input class="label_right" readonly="readonly" disabled name="cliente" <?php echo "<option value=" .$cotizacion["PRECIO_PRODUCTO_ACTUAL"]. "></option>";?>
+            </td>
+            <td>
+            <input class="label_right" readonly="readonly" disabled name="cliente" <?php echo "<option value=" .$cotizacion["SUMA"]. "></option>";?>
+            </td>
             </tr>
         </tbody>
         </table>
@@ -91,16 +113,22 @@
             <table class="table col-4" align='right'>
         <tbody>
             <tr>
-            <td>Subtotal</td>
-            <td>$ 1000</td>
+                <td>Subtotal</td>
+            <td>
+            <input class="label_right" readonly="readonly" disabled name="cliente" <?php echo "<option value=" .$cotizacion["SUMA"]. "></option>";?>
+            </td>
             </tr>
             <tr>
-            <td>IVA</td>
-            <td>$ 190</td>
+                <td>IVA</td>
+            <td>
+                <input class="label_right" readonly="readonly" disabled name="cliente" <?php echo "<option value=" .str_replace('.00', '',$cotizacion["IVA"]). "></option>";?>
+            </td>
             </tr>
             <tr>
-            <td>Total</td>
-            <td>$ 1190</td>
+                <td>Total</td>
+            <td>
+            <input class="label_right" readonly="readonly" disabled name="cliente" <?php echo "<option value=" .str_replace('.00', '',$cotizacion["TOTAL"]). "></option>";?>
+            </td>
             </tr>
         </tbody>
         </table>
@@ -123,7 +151,7 @@
         <div class="card2">
             <div class="card-body2">
                 <div class align='center'>
-                    <label class="form-check-label" for="examplecheck1">Ph: 7425540 Ext. 4202 Cel: 3105635427</label>
+                    <label class="form-check-label" for="examplecheck1">PBX: 7425540 Cel: 3105635427</label>
                     <label class="form-check-label" for="examplecheck1">info@gmtvaritec.com</label>
                 </div>
             </div>
@@ -143,6 +171,7 @@
 </div>
 </div>
 <div></div>
+<br>
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
